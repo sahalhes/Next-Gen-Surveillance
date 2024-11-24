@@ -3,13 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next Gen Surveillance Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Next Gen Surveillance</title>
+    <script>
+        // Fetch and display tracker data
+        async function fetchTrackers() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/track');
+                const data = await response.json();
+                const trackersList = document.getElementById('trackers-list');
+                trackersList.innerHTML = '';  // Clear existing content
+
+                // Loop through the trackers and display them in a list
+                data.trackers.forEach(tracker => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${tracker.name}: Latitude: ${tracker.latitude}, Longitude: ${tracker.longitude}`;
+                    trackersList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error fetching tracker data:', error);
+            }
+        }
+
+        // Add a new tracker
+        async function addTracker() {
+            const name = document.getElementById('tracker-name').value;
+            const latitude = parseFloat(document.getElementById('tracker-lat').value);
+            const longitude = parseFloat(document.getElementById('tracker-lng').value);
+
+            const trackerData = {
+                name: name,
+                latitude: latitude,
+                longitude: longitude
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/track', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(trackerData)
+                });
+                const data = await response.json();
+                if (data.message === 'Tracker added successfully!') {
+                    alert('New tracker added');
+                    fetchTrackers();  // Refresh the list of trackers
+                }
+            } catch (error) {
+                console.error('Error adding tracker:', error);
+            }
+        }
+
+        // Call the function when the page loads
+        window.onload = fetchTrackers;
+    </script>
 </head>
 <body>
-    <h1>Next Gen Surveillance Tracker</h1>
-    <div id="map"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-    <script src="map.js"></script>
+    <h1>Next Gen Surveillance - Tracker List</h1>
+
+    <!-- Add Tracker Form -->
+    <h2>Add New Tracker</h2>
+    <form onsubmit="event.preventDefault(); addTracker();">
+        <input type="text" id="tracker-name" placeholder="Tracker Name" required><br>
+        <input type="number" id="tracker-lat" placeholder="Latitude" required><br>
+        <input type="number" id="tracker-lng" placeholder="Longitude" required><br>
+        <button type="submit">Add Tracker</button>
+    </form>
+
+    <h2>Trackers List</h2>
+    <ul id="trackers-list"></ul>
 </body>
 </html>
