@@ -58,7 +58,7 @@ To run this project locally:
 - **Improved authentication and authorization**: Add security features to protect data and access.
 
 ### Contributors
-E S SAHAL HUSSAIN (@sahalhes)
+Sahal Hussain (@sahalhes)
 
 ### License
 This project is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/).
